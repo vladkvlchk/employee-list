@@ -1,7 +1,6 @@
 header {
   width: 100vw;
   height: 60px;
-  border-bottom: 1px solid black;
 
   .container {
     height: 100%;
@@ -18,19 +17,19 @@ header {
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 320px) {
   .container {
     justify-content: space-around;
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .container {
     padding: 0 32px;
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1024px) {
   .container {
     padding: 0 60px;
   }

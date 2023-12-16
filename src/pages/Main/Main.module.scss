@@ -1,0 +1,50 @@
+main {
+  max-width: 1170px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .welcomeSection {
+    background-image: url('../../assents/welcome-picture.png');
+    background-position: center center;
+    height: 650px;
+    width: 100%;
+    color: rgb(255, 255, 225, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .welcomeContainer{
+        max-width: 380px;
+        text-align: center;
+
+        h1{
+            font-size: 40px;
+            line-height: 40px;
+            font-weight: 400;
+        }
+
+        p{
+            font-size: 16px;
+            line-height: 26px;
+        }
+    }
+  }
+}
+
+@media (max-width: 360px) {
+    .welcomeSection{
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcomeSection{
+        height: 500px;
+    }
+}
+
+@media (max-width: 1024px) {
+}
