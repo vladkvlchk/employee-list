@@ -6,7 +6,7 @@ main {
   align-items: center;
 
   .welcomeSection {
-    background-image: url('../../assents/welcome-picture.png');
+    background-image: url("../../assents/welcome-picture.png");
     background-position: center center;
     height: 650px;
     width: 100%;
@@ -16,34 +16,35 @@ main {
     align-items: center;
     justify-content: center;
 
-    .welcomeContainer{
-        max-width: 380px;
-        text-align: center;
+    .welcomeContainer {
+      max-width: 380px;
+      text-align: center;
+    }
+  }
 
-        h1{
-            font-size: 40px;
-            line-height: 40px;
-            font-weight: 400;
-        }
+  .teamSection {
+    margin-top: 100px;
+    text-align: center;
 
-        p{
-            font-size: 16px;
-            line-height: 26px;
-        }
+    .employeeList {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
   }
 }
 
 @media (max-width: 360px) {
-    .welcomeSection{
-        height: 500px;
-    }
+  .welcomeSection {
+    height: 500px;
+  }
 }
 
 @media (max-width: 768px) {
-    .welcomeSection{
-        height: 500px;
-    }
+  .welcomeSection {
+    height: 500px;
+  }
 }
 
 @media (max-width: 1024px) {

@@ -1,9 +1,11 @@
-import styles from './MyButton.module.scss'
+import styles from "./MyButton.module.scss";
 
-const MyButton = ({children}) => {
-  return <button className={styles.myButton}>
-    {children}
-  </button>;
+const MyButton = ({ children, onClick }) => {
+  return (
+    <button className={styles.myButton} onClick={onClick}>
+      {children}
+    </button>
+  );
 };
 
 export default MyButton;
