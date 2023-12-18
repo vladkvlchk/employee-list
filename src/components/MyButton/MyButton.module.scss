@@ -9,3 +9,15 @@
     border-radius: 17px;
     cursor: pointer;
 }
+
+.myButton_disabled{
+    background-color: #B4B4B4;
+    color: rgba(255, 255, 255, 0.87);
+    border: none;
+    width: fit-content;
+    min-width: 100px;
+    margin: 0 10px;
+    height: 34px;
+    border-radius: 17px;
+    cursor: pointer;
+}

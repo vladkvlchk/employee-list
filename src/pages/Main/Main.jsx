@@ -3,6 +3,14 @@ import MyButton from "../../components/MyButton/MyButton";
 import axios from "../../axios";
 import styles from "./Main.module.scss";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
+import {
+  RadioGroup,
+  TextField,
+  FormControlLabel,
+  Radio,
+  FormLabel,
+  Button,
+} from "@mui/material";
 
 const Main = () => {
   const [employees, setEmployees] = React.useState([]);
@@ -33,9 +41,9 @@ const Main = () => {
     console.log(page);
   };
 
-  React.useEffect(() => {
-    getTeam();
-  }, []);
+  // React.useEffect(() => {
+  //   getTeam();
+  // }, []);
 
   return (
     <main>
@@ -71,6 +79,93 @@ const Main = () => {
         ) : (
           <></>
         )}
+      </section>
+      <section className={styles.formSection}>
+        <h1>Working with POST request</h1>
+        <form>
+          <TextField
+            className={styles.inputText}
+            id="outlined-basic"
+            label="Your name"
+            variant="outlined"
+          />
+          <TextField
+            className={styles.inputText}
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+          />
+          <TextField
+            className={styles.inputText}
+            id="outlined-basic"
+            label="Phone"
+            variant="outlined"
+            helperText="+38 (XXX) XXX - XX - XX"
+          />
+          <FormLabel id="demo-radio-buttons-group-label">
+            Select your position
+          </FormLabel>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="female"
+            name="radio-buttons-group"
+          >
+            <FormControlLabel
+              value="Frontend developer"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "rgba(0, 189, 211, 1)",
+                    },
+                  }}
+                />
+              }
+              label="Frontend developer"
+            />
+            <FormControlLabel
+              value="Backend developer"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "rgba(0, 189, 211, 1)",
+                    },
+                  }}
+                />
+              }
+              label="Backend developer"
+            />
+            <FormControlLabel
+              value="Designer"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "rgba(0, 189, 211, 1)",
+                    },
+                  }}
+                />
+              }
+              label="Designer"
+            />
+            <FormControlLabel
+              value="QA"
+              control={
+                <Radio
+                  sx={{
+                    "&.Mui-checked": {
+                      color: "rgba(0, 189, 211, 1)",
+                    },
+                  }}
+                />
+              }
+              label="QA"
+            />
+          </RadioGroup>
+          <input type="file" />
+          <MyButton disabled>Sign Up</MyButton>
+        </form>
       </section>
     </main>
   );

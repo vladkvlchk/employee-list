@@ -1,6 +1,7 @@
 main {
   max-width: 1170px;
   margin: 0 auto;
+  margin-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,6 +25,7 @@ main {
 
   .teamSection {
     margin-top: 100px;
+    margin-bottom: 106.8px;
     text-align: center;
 
     .employeeList {
@@ -31,6 +33,45 @@ main {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+    }
+  }
+
+  .formSection {
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 380px;
+      margin: 30px auto;
+
+      .inputText {
+        margin: 24px 0;
+        color: rgba(126, 126, 126, 1);
+      }
+
+      input[type="radio"] {
+        border: 1px solid #D0CFCF;
+      }
+
+      input[type="file"] {
+        border: 1px solid rgba(208, 207, 207, 1);
+        border-radius: 4px;
+        margin-top: 47px;
+        margin-bottom: 50px;
+        color: #7e7e7e;
+      }
+
+      input[type="file"]::file-selector-button {
+        padding: 14px 15px;
+        margin-right: 16px;
+        background: none;
+        border: 1px solid rgb(0, 0, 0, 0.87);
+        border-radius: 4px 0 0 4px;
+        color: rdb(0, 0, 0, 0.87);
+      }
+
+      button{
+        margin: auto;
+      }
     }
   }
 }
