@@ -21,10 +21,10 @@ const Main = () => {
   const [totalPages, setTotalPages] = useState(2);
 
   //form
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("Harry Potter");
+  const [email, setEmail] = useState("harrypotter@hogvartz.ua");
   const [isValidEmail, setValidEmail] = useState(true);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+38 (050) 672 - 95 - 00");
   const [isValidPhone, setValidPhone] = useState(true);
   const [position, setPosition] = useState("");
   const [file, setFile] = useState(null);
@@ -87,7 +87,7 @@ const Main = () => {
     }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     setValidEmail(validateEmail(email));
@@ -101,17 +101,19 @@ const Main = () => {
       file
     ) {
       try {
-        const { data } = axios.post("/users", {
-          name,
-          email,
-          phone: phone
+        const formData = new FormData();
+        formData.append("photo", file);
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("phone", phone
             .replaceAll(" ", "")
             .replaceAll("-", "")
             .replaceAll("(", "")
-            .replaceAll(")", ""),
-          position_id: position,
-          photo: file,
-        });
+            .replaceAll(")", "")
+        );
+        formData.append("position_id", position);
+
+        const { data } = await axios.post("/users", formData);
 
         console.log(data);
         setRegistered(true);
