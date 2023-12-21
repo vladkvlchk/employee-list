@@ -3,18 +3,24 @@ import MyButton from "../../components/MyButton/MyButton";
 import axios from "../../axios";
 import styles from "./Main.module.scss";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
+import { validateEmail, validatePhone } from "../../helper/validation";
 import {
   RadioGroup,
   TextField,
   FormControlLabel,
   Radio,
   FormLabel,
+  CircularProgress,
 } from "@mui/material";
+
+import successImage from "../../assents/success-image";
 
 const Main = () => {
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
+
+  //form
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isValidEmail, setValidEmail] = useState(true);
@@ -23,9 +29,22 @@ const Main = () => {
   const [position, setPosition] = useState("");
   const [file, setFile] = useState(null);
   const [positions, setPositions] = useState([]);
+  const [isRegistered, setRegistered] = useState(false);
+
+  const [isLoading, setLoading] = useState(true);
+
+  const getToken = async () => {
+    try {
+      const { data } = await axios.get("/token");
+      window.localStorage.setItem("token", data.token);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const getTeam = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get("/users", {
         params: {
           offset: (page - 1) * 6,
@@ -33,10 +52,10 @@ const Main = () => {
         },
       });
 
-      console.log(data);
       setEmployees((prev) => [...prev, ...data.users]);
       setPage(page + 1);
       setTotalPages(data.total_pages);
+      setLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -46,26 +65,10 @@ const Main = () => {
     try {
       const { data } = await axios.get("/positions");
       setPositions(data.positions);
-      setPosition(data.positions[0].name);
+      setPosition(data.positions[0].id);
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const onShowMore = () => {
-    console.log("click");
-    getTeam();
-    console.log(page);
-  };
-
-  const validateEmail = (input) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(input);
-  };
-
-  const validatePhone = (input) => {
-    const phoneRegex = /^\+38 \(\d{3}\) \d{3} - \d{2} - \d{2}$/;
-    return phoneRegex.test(input);
   };
 
   const onChangePhone = (e) => {
@@ -82,7 +85,6 @@ const Main = () => {
     } else if (newValue.length < 24) {
       setPhone(newValue);
     }
-    
   };
 
   const onSubmit = (event) => {
@@ -98,16 +100,29 @@ const Main = () => {
       name.length < 61 &&
       file
     ) {
-      console.log("sending request...");
-      const { data } = axios.post("/users", {
-        body: { name, email, phone: phone.replace(" ", "").replace("-", "") },
-      });
-    }
+      try {
+        const { data } = axios.post("/users", {
+          name,
+          email,
+          phone: phone
+            .replaceAll(" ", "")
+            .replaceAll("-", "")
+            .replaceAll("(", "")
+            .replaceAll(")", ""),
+          position_id: position,
+          photo: file,
+        });
 
-    console.log({ name, email, phone, position });
+        console.log(data);
+        setRegistered(true);
+      } catch (err) {
+        console.error(err);
+      }
+    }
   };
 
   useEffect(() => {
+    getToken();
     getTeam();
     getPositions();
   }, []);
@@ -130,88 +145,104 @@ const Main = () => {
       <section className={styles.teamSection}>
         <h1>Working with GET request</h1>
         <div className={styles.employeeList}>
-          {employees.map((employee) => (
-            <EmployeeCard
-              key={employee.id}
-              name={employee.name}
-              photo={employee.photo}
-              email={employee.email}
-              position={employee.position}
-              phone={employee.phone}
-            />
-          ))}
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            employees.map((employee) => (
+              <EmployeeCard
+                key={employee.id}
+                name={employee.name}
+                photo={employee.photo}
+                email={employee.email}
+                position={employee.position}
+                phone={employee.phone}
+              />
+            ))
+          )}
         </div>
-        {page <= totalPages ? (
-          <MyButton onClick={onShowMore}>Show more</MyButton>
+        {!isLoading && page <= totalPages ? (
+          <MyButton onClick={getTeam}>Show more</MyButton>
         ) : (
           <></>
         )}
       </section>
       <section className={styles.formSection}>
-        <h1>Working with POST request</h1>
-        <form onSubmit={onSubmit}>
-          <TextField
-            className={styles.inputText}
-            id="outlined-basic"
-            label="Your name"
-            variant="outlined"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-          />
-          <TextField
-            className={styles.inputText}
-            id="outlined-basic"
-            label="Email"
-            variant="outlined"
-            onChange={(e) => setEmail(e.target.value)}
-            error={!isValidEmail}
-            value={email}
-            helperText={
-              !isValidEmail ? "Please enter a valid email address" : ""
-            }
-          />
-          <TextField
-            className={styles.inputText}
-            id="outlined-basic"
-            label="Phone"
-            variant="outlined"
-            helperText="+38 (XXX) XXX - XX - XX"
-            onChange={onChangePhone}
-            value={phone}
-            error={!isValidPhone}
-          />
-          <FormLabel id="demo-radio-buttons-group-label">
-            Select your position
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="female"
-            name="radio-buttons-group"
-            value={position}
-          >
-            {positions.map((position) => (
-              <FormControlLabel
-                key={position.id}
-                value={position.name}
-                control={
-                  <Radio
-                    sx={{
-                      "&.Mui-checked": {
-                        color: "rgba(0, 189, 211, 1)",
-                      },
-                    }}
-                  />
-                }
-                label={position.name}
-                onChange={(e) => setPosition(e.target.value)}
+        {isRegistered ? (
+          <>
+            <h1>User successfully registered</h1>
+            <picture>{successImage}</picture>
+          </>
+        ) : (
+          <>
+            <h1>Working with POST request</h1>
+            <form onSubmit={onSubmit}>
+              <TextField
+                className={styles.inputText}
+                id="outlined-basic"
+                label="Your name"
+                variant="outlined"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
               />
-            ))}
-          </RadioGroup>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-          <MyButton disabled={!name || !email || !phone || !file} type="submit">
-            Sign Up
-          </MyButton>
-        </form>
+              <TextField
+                className={styles.inputText}
+                id="outlined-basic"
+                label="Email"
+                variant="outlined"
+                onChange={(e) => setEmail(e.target.value)}
+                error={!isValidEmail}
+                value={email}
+                helperText={
+                  !isValidEmail ? "Please enter a valid email address" : ""
+                }
+              />
+              <TextField
+                className={styles.inputText}
+                id="outlined-basic"
+                label="Phone"
+                variant="outlined"
+                helperText="+38 (XXX) XXX - XX - XX"
+                onChange={onChangePhone}
+                value={phone}
+                error={!isValidPhone}
+              />
+              <FormLabel id="demo-radio-buttons-group-label">
+                Select your position
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="female"
+                name="radio-buttons-group"
+                value={position}
+              >
+                {positions.map((position) => (
+                  <FormControlLabel
+                    key={position.id}
+                    value={position.id}
+                    control={
+                      <Radio
+                        sx={{
+                          "&.Mui-checked": {
+                            color: "rgba(0, 189, 211, 1)",
+                          },
+                        }}
+                      />
+                    }
+                    label={position.name}
+                    onChange={(e) => setPosition(e.target.value)}
+                  />
+                ))}
+              </RadioGroup>
+              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+              <MyButton
+                disabled={!name || !email || !phone || !file}
+                type="submit"
+              >
+                Sign Up
+              </MyButton>
+            </form>
+          </>
+        )}
       </section>
     </main>
   );
