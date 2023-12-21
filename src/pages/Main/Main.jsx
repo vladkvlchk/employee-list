@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 const Main = () => {
+
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
@@ -23,7 +24,7 @@ const Main = () => {
   const [position, setPosition] = useState("");
   const [file, setFile] = useState(null);
   const [positions, setPositions] = useState([]);
-
+  
   const getTeam = async () => {
     try {
       const { data } = await axios.get("/users", {
@@ -32,7 +33,7 @@ const Main = () => {
           count: 6,
         },
       });
-
+      
       console.log(data);
       setEmployees((prev) => [...prev, ...data.users]);
       setPage(page + 1);
@@ -41,7 +42,7 @@ const Main = () => {
       console.error(err);
     }
   };
-
+  
   const getPositions = async () => {
     try {
       const { data } = await axios.get("/positions");
@@ -50,26 +51,26 @@ const Main = () => {
       console.log(e);
     }
   };
-
+  
   const onShowMore = () => {
     console.log("click");
     getTeam();
     console.log(page);
   };
-
+  
   const validateEmail = (input) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(input);
   };
-
+  
   const validatePhone = (input) => {
     const phoneRegex = /^\+38 \(\d{3}\) \d{3} - \d{2} - \d{2}$/;
     return phoneRegex.test(input);
   };
-
+  
   const onChangePhone = (e) => {
     const newValue = e.target.value;
-
+    
     if (newValue.length < phone.length) {
       setPhone(newValue);
     } else if (newValue.length === 1) {
@@ -82,7 +83,6 @@ const Main = () => {
       setPhone(newValue);
     }
   };
-};
 
 const onSubmit = (event) => {
   event.preventDefault();
@@ -212,6 +212,7 @@ return (
       </form>
     </section>
   </main>
-);
+  );
+};
 
 export default Main;
