@@ -1,36 +1,20 @@
 import React, { useState, useEffect } from "react";
-import MyButton from "../../components/MyButton/MyButton";
+import { CircularProgress } from "@mui/material";
+
 import axios from "../../axios";
 import styles from "./Main.module.scss";
-import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
-import { validateEmail, validatePhone } from "../../helper/validation";
-import {
-  RadioGroup,
-  TextField,
-  FormControlLabel,
-  Radio,
-  FormLabel,
-  CircularProgress,
-} from "@mui/material";
-
 import successImage from "../../assents/success-image";
+
+import MyButton from "../../components/MyButton/MyButton";
+import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
+import Form from "../../components/Form/Form";
+
 
 const Main = () => {
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
-
-  //form
-  const [name, setName] = useState("Harry Potter");
-  const [email, setEmail] = useState("harrypotter@hogvartz.ua");
-  const [isValidEmail, setValidEmail] = useState(true);
-  const [phone, setPhone] = useState("+38 (050) 672 - 95 - 00");
-  const [isValidPhone, setValidPhone] = useState(true);
-  const [position, setPosition] = useState("");
-  const [file, setFile] = useState(null);
-  const [positions, setPositions] = useState([]);
   const [isRegistered, setRegistered] = useState(false);
-
   const [isLoading, setLoading] = useState(true);
 
   const getToken = async () => {
@@ -61,72 +45,32 @@ const Main = () => {
     }
   };
 
-  const getPositions = async () => {
+  const sendUser = async (formData) => {
     try {
-      const { data } = await axios.get("/positions");
-      setPositions(data.positions);
-      setPosition(data.positions[0].id);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+      await axios.post("/users", formData);
 
-  const onChangePhone = (e) => {
-    const newValue = e.target.value;
+      setRegistered(true);
+      setLoading(true);
 
-    if (newValue.length < phone.length) {
-      setPhone(newValue);
-    } else if (newValue.length === 1) {
-      setPhone("+38 (" + e.target.value);
-    } else if (newValue.length === 8) {
-      setPhone(e.target.value + ") ");
-    } else if (newValue.length === 13 || newValue.length === 18) {
-      setPhone(e.target.value + " - ");
-    } else if (newValue.length < 24) {
-      setPhone(newValue);
-    }
-  };
+      const response = await axios.get("/users", {
+        params: {
+          offset: 0,
+          count: 6,
+        },
+      });
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-
-    setValidEmail(validateEmail(email));
-    setValidPhone(validatePhone(phone));
-
-    if (
-      isValidEmail &&
-      isValidPhone &&
-      name.length > 1 &&
-      name.length < 61 &&
-      file
-    ) {
-      try {
-        const formData = new FormData();
-        formData.append("photo", file);
-        formData.append("name", name);
-        formData.append("email", email);
-        formData.append("phone", phone
-            .replaceAll(" ", "")
-            .replaceAll("-", "")
-            .replaceAll("(", "")
-            .replaceAll(")", "")
-        );
-        formData.append("position_id", position);
-
-        const { data } = await axios.post("/users", formData);
-
-        console.log(data);
-        setRegistered(true);
-      } catch (err) {
-        console.error(err);
-      }
+      setEmployees(response.data.users);
+      setPage(2);
+      setTotalPages(response.data.total_pages);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   useEffect(() => {
     getToken();
     getTeam();
-    getPositions();
   }, []);
 
   return (
@@ -177,72 +121,7 @@ const Main = () => {
         ) : (
           <>
             <h1>Working with POST request</h1>
-            <form onSubmit={onSubmit}>
-              <TextField
-                className={styles.inputText}
-                id="outlined-basic"
-                label="Your name"
-                variant="outlined"
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-              />
-              <TextField
-                className={styles.inputText}
-                id="outlined-basic"
-                label="Email"
-                variant="outlined"
-                onChange={(e) => setEmail(e.target.value)}
-                error={!isValidEmail}
-                value={email}
-                helperText={
-                  !isValidEmail ? "Please enter a valid email address" : ""
-                }
-              />
-              <TextField
-                className={styles.inputText}
-                id="outlined-basic"
-                label="Phone"
-                variant="outlined"
-                helperText="+38 (XXX) XXX - XX - XX"
-                onChange={onChangePhone}
-                value={phone}
-                error={!isValidPhone}
-              />
-              <FormLabel id="demo-radio-buttons-group-label">
-                Select your position
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
-                name="radio-buttons-group"
-                value={position}
-              >
-                {positions.map((position) => (
-                  <FormControlLabel
-                    key={position.id}
-                    value={position.id}
-                    control={
-                      <Radio
-                        sx={{
-                          "&.Mui-checked": {
-                            color: "rgba(0, 189, 211, 1)",
-                          },
-                        }}
-                      />
-                    }
-                    label={position.name}
-                    onChange={(e) => setPosition(e.target.value)}
-                  />
-                ))}
-              </RadioGroup>
-              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-              <MyButton
-                disabled={!name || !email || !phone || !file}
-                type="submit"
-              >
-                Sign Up
-              </MyButton>
-            </form>
+            <Form sendUser={sendUser} />
           </>
         )}
       </section>
