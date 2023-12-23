@@ -15,6 +15,7 @@ const Main = () => {
   const [employees, setEmployees] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
+  
   const [isRegistered, setRegistered] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
