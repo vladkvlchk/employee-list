@@ -1,5 +1,5 @@
 import styles from "./EmployeeCard.module.scss";
-import avatar from "../../assents/avatar";
+import avatar from "../../assets/avatar";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 
@@ -17,7 +17,11 @@ const EmployeeCard = ({ email, photo, name, position, phone }) => {
   return (
     <div className={styles.card}>
       <picture className={styles.profilePhoto}>
-        {photo ? <img src={photo} alt="profile photo" /> : avatar}
+        {photo ? (
+          <img src={photo} alt="profile photo" loading="lazy" />
+        ) : (
+          avatar
+        )}
       </picture>
       <p>{name}</p>
       <div className={styles.aboutMember}>

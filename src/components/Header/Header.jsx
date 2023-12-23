@@ -1,5 +1,5 @@
 import MyButton from "../MyButton/MyButton";
-import logo from "../../assents/logo";
+import logo from "../../assets/logo";
 import styles from "./Header.module.scss";
 
 const Header = () => {

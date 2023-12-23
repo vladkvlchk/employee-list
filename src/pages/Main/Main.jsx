@@ -3,12 +3,13 @@ import { CircularProgress } from "@mui/material";
 
 import axios from "../../axios";
 import styles from "./Main.module.scss";
-import successImage from "../../assents/success-image";
+import successImage from "../../assets/success-image";
 
 import MyButton from "../../components/MyButton/MyButton";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
 import Form from "../../components/Form/Form";
 
+import image from "./../../assets/welcome-picture.png";
 
 const Main = () => {
   const [employees, setEmployees] = useState([]);
@@ -76,6 +77,7 @@ const Main = () => {
   return (
     <main>
       <section className={styles.welcomeSection}>
+        <img src={image} alt="welcome background" loading="lazy" className={styles.background}/>
         <div className={styles.welcomeContainer}>
           <h1>Test assignment for front-end developer</h1>
           <p>
